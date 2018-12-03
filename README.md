@@ -28,3 +28,4 @@ optional arguments:
 - [ ] Clear local database
 - [ ] Batch insert
 - [ ] Ask to perform a sync if last sync was done over 24 hours ago
+- [ ] Memoize scraping functions to re-use downloaded pages
