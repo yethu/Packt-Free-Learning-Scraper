@@ -113,7 +113,19 @@ def list_books():
     for book in Book.order_by('title').get():
         table.append([book.title, book.authors])
 
-    print(tabulate(table, headers=['title', 'authors'], tablefmt='pipe'))
+    print(tabulate(table, headers=['Title', 'Authors'], tablefmt='pipe'))
+
+
+def title_search(title: str):
+    return Book.query().where('title', 'like', f'%{title}%').order_by('title').get()
+
+
+def perform_search(title: str):
+    table = []
+    for book in title_search(title):
+        table.append([book.title, book.authors])
+
+    print(tabulate(table, headers=['Title', 'Authors'], tablefmt='pipe'))
 
 
 def main():
@@ -122,12 +134,16 @@ def main():
                         help='sync local book list with server')
     parser.add_argument('-l', action='store_true',
                         help='print local book list')
+    parser.add_argument('-st', type=str, default='',
+                        metavar='TERM', help='perform a naive title search')
     args = parser.parse_args()
 
     if args.s:
         sync_books()
     elif args.l:
         list_books()
+    elif args.st:
+        perform_search(args.st)
 
 
 if __name__ == '__main__':
