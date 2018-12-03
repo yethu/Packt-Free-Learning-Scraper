@@ -128,12 +128,43 @@ def perform_search(title: str):
     print(tabulate(table, headers=['Title', 'Authors'], tablefmt='pipe'))
 
 
+def get_current_book() -> str:
+    print(f'{Back.GREEN}checking current book{Style.RESET_ALL}')
+    config = None
+    with open('config.json') as config_file:
+        config = json.load(config_file)
+
+    if config is not None:
+        headers = {
+            'Referer': config['free_learning_url'],
+            'User-Agent': config['user_agent']
+        }
+        response = requests.get(config['free_learning_url'], headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        title = soup.select_one('.dotd-title > h2')
+        return title.text.strip()
+
+
+def check_current_book():
+    current_book = get_current_book()
+    print(f'Current Book: {current_book}')
+    message = f'{Back.GREEN}CLAIMED{Style.RESET_ALL}' if book_exists_in_db(
+        current_book) else f'{Back.RED}NOT CLAIMED{Style.RESET_ALL}'
+    print(f'Status: {message}')
+
+
+def book_exists_in_db(title: str) -> bool:
+    return Book.where('title', title).first() is not None
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', action='store_true',
                         help='sync local book list with server')
     parser.add_argument('-l', action='store_true',
                         help='print local book list')
+    parser.add_argument('-c', action='store_true',
+                        help='check current free book')
     parser.add_argument('-st', type=str, default='',
                         metavar='TERM', help='perform a naive title search')
     args = parser.parse_args()
@@ -142,6 +173,8 @@ def main():
         sync_books()
     elif args.l:
         list_books()
+    elif args.c:
+        check_current_book()
     elif args.st:
         perform_search(args.st)
 

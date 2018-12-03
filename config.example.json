@@ -1,6 +1,7 @@
 {
   "login_url": "https://www.packtpub.com/login",
   "ebook_url": "https://www.packtpub.com/account/my-ebooks",
+  "free_learning_url": "https://www.packtpub.com/packt/offers/free-learning",
   "username": "",
   "password": "",
   "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36"
