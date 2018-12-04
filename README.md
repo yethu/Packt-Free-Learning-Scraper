@@ -11,13 +11,14 @@ run `orator migrate -c dbconfig.py`
 
 ## Usage
 ```
-usage: pscrape.py [-h] [-s] [-l] [-c] [-st TERM]
+usage: pscrape.py [-h] [-s] [-l] [-c] [-d] [-st TERM]
 
 optional arguments:
   -h, --help  show this help message and exit
   -s          sync local book list with server
   -l          print local book list
   -c          check current free book
+  -d          clear local database
   -st TERM    perform a naive title search
 ```
 
@@ -25,7 +26,7 @@ optional arguments:
 - [ ] Remove password from `config.json`
 - [ ] Add fuzzy search
 - [ ] Check current free book without comparing to local database
-- [ ] Clear local database
+- [x] Clear local database
 - [ ] Batch insert
 - [ ] Ask to perform a sync if last sync was done over 24 hours ago
 - [ ] Memoize scraping functions to re-use downloaded pages

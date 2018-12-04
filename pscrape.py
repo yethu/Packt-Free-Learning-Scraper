@@ -157,6 +157,10 @@ def book_exists_in_db(title: str) -> bool:
     return Book.where('title', title).first() is not None
 
 
+def clear_database():
+    Book.query().delete()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', action='store_true',
@@ -165,6 +169,7 @@ def main():
                         help='print local book list')
     parser.add_argument('-c', action='store_true',
                         help='check current free book')
+    parser.add_argument('-d', action='store_true', help='clear local database')
     parser.add_argument('-st', type=str, default='',
                         metavar='TERM', help='perform a naive title search')
     args = parser.parse_args()
@@ -175,6 +180,8 @@ def main():
         list_books()
     elif args.c:
         check_current_book()
+    elif args.d:
+        clear_database()
     elif args.st:
         perform_search(args.st)
 
