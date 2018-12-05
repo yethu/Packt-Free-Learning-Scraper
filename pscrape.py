@@ -1,42 +1,32 @@
-import argparse
-import json
-import re
-import requests
 from bs4 import BeautifulSoup
 from colorama import Fore, Back, Style
 from models.book import Book
 from orator.exceptions.query import QueryException
 from tabulate import tabulate
+import argparse
+import common
+import json
+import requests
 
 
 def get_form_id(s, config: dict) -> str:
-    headers = {
-        'Referer': config['login_url'],
-        'User-Agent': config['user_agent']
-    }
+    headers = common.build_headers(config['login_url'], config['user_agent'])
     response = s.get(config['login_url'], headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
     form_build_id_tag = soup.find('input', {'name': 'form_build_id'})
     return form_build_id_tag['value']
 
 
-def parse_title(title):
-    return re.sub(r'\s?\[eBook\]', '', title.strip())
-
-
 def get_ebooks_by_page(s, config, page):
     params = {
         'page': page
     }
-    headers = {
-        'Referer': config['ebook_url'],
-        'User-Agent': config['user_agent']
-    }
+    headers = common.build_headers(config['ebook_url'], config['user_agent'])
     response = s.get(config['ebook_url'], headers=headers, params=params)
     soup = BeautifulSoup(response.text, 'html.parser')
     product_account_list = soup.find('div', {'id': 'product-account-list'})
     raw_titles = product_account_list.find_all('div', {'class': 'title'})
-    titles = map(parse_title, [title.text for title in raw_titles])
+    titles = map(common.parse_title, [title.text for title in raw_titles])
     raw_authors = product_account_list.find_all('div', {'class': 'author'})
     authors = [author.text.strip() for author in raw_authors]
 
@@ -47,10 +37,7 @@ def get_page_count(s, config) -> int:
     params = {
         'page': 1
     }
-    headers = {
-        'Referer': config['ebook_url'],
-        'User-Agent': config['user_agent']
-    }
+    headers = common.build_headers(config['ebook_url'], config['user_agent'])
     response = s.get(config['ebook_url'], headers=headers, params=params)
     soup = BeautifulSoup(response.text, 'html.parser')
     product_account_list = soup.find('div', {'id': 'product-account-list'})
@@ -100,10 +87,7 @@ def login(s, form_build_id: str, config: dict):
         'form_id': 'packt_v3_account_login_form',
         'form_build_id': form_build_id
     }
-    headers = {
-        'Referer': config['login_url'],
-        'User-Agent': config['user_agent']
-    }
+    headers = common.build_headers(config['login_url'], config['user_agent'])
     # TODO: check login failure
     s.post(config['login_url'], data=login_data, headers=headers)
 
@@ -135,10 +119,8 @@ def get_current_book() -> str:
         config = json.load(config_file)
 
     if config is not None:
-        headers = {
-            'Referer': config['free_learning_url'],
-            'User-Agent': config['user_agent']
-        }
+        headers = common.build_headers(
+            config['free_learning_url'], config['user_agent'])
         response = requests.get(config['free_learning_url'], headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
         title = soup.select_one('.dotd-title > h2')
