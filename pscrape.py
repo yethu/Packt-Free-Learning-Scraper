@@ -21,7 +21,7 @@ def get_form_id(s, config: dict) -> str:
 
 
 def parse_title(title):
-    return re.sub(r' \[eBook\]$', '', title.strip())
+    return re.sub(r'\s?\[eBook\]', '', title.strip())
 
 
 def get_ebooks_by_page(s, config, page):
