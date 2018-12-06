@@ -127,12 +127,13 @@ def get_current_book() -> str:
         return title.text.strip()
 
 
-def check_current_book():
+def check_current_book(no_local = False):
     current_book = get_current_book()
     print(f'Current Book: {current_book}')
-    message = f'{Back.GREEN}CLAIMED{Style.RESET_ALL}' if book_exists_in_db(
-        current_book) else f'{Back.RED}NOT CLAIMED{Style.RESET_ALL}'
-    print(f'Status: {message}')
+    if not no_local:
+        message = f'{Back.GREEN}CLAIMED{Style.RESET_ALL}' if book_exists_in_db(
+            current_book) else f'{Back.RED}NOT CLAIMED{Style.RESET_ALL}'
+        print(f'Status: {message}')
 
 
 def book_exists_in_db(title: str) -> bool:
@@ -147,10 +148,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', action='store_true',
                         help='sync local book list with server')
+    group = parser.add_argument_group()
+    group.add_argument('-c', action='store_true',
+                       help='check current free book')
+    group.add_argument('--no-local', action='store_true',
+                       help='do not check against local database')
     parser.add_argument('-l', action='store_true',
                         help='print local book list')
-    parser.add_argument('-c', action='store_true',
-                        help='check current free book')
     parser.add_argument('-d', action='store_true', help='clear local database')
     parser.add_argument('-st', type=str, default='',
                         metavar='TERM', help='perform a naive title search')
@@ -161,7 +165,7 @@ def main():
     elif args.l:
         list_books()
     elif args.c:
-        check_current_book()
+        check_current_book(args.no_local)
     elif args.d:
         clear_database()
     elif args.st:
