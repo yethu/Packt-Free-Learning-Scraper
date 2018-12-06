@@ -148,7 +148,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', action='store_true',
                         help='sync local book list with server')
-    group = parser.add_argument_group()
+    group = parser.add_argument_group('check current free book')
     group.add_argument('-c', action='store_true',
                        help='check current free book')
     group.add_argument('--no-local', action='store_true',

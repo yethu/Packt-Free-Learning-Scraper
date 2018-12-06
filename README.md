@@ -11,21 +11,24 @@ run `orator migrate -c dbconfig.py`
 
 ## Usage
 ```
-usage: pscrape.py [-h] [-s] [-l] [-c] [-d] [-st TERM]
+usage: pscrape.py [-h] [-s] [-c] [--no-local] [-l] [-d] [-st TERM]
 
 optional arguments:
   -h, --help  show this help message and exit
   -s          sync local book list with server
   -l          print local book list
-  -c          check current free book
   -d          clear local database
   -st TERM    perform a naive title search
+
+check current free book:
+  -c          check current free book
+  --no-local  do not check against local database
 ```
 
 ## TODO
 - [ ] Remove password from `config.json`
 - [ ] Add fuzzy search
-- [ ] Check current free book without comparing to local database
+- [x] Check current free book without comparing to local database
 - [x] Clear local database
 - [ ] Batch insert
 - [ ] Ask to perform a sync if last sync was done over 24 hours ago
