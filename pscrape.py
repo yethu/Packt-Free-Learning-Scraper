@@ -35,7 +35,7 @@ def memoize(fetcher) -> Callable:
 
 @memoize
 def fetch_page(s, config, page):
-    params = {page: page}
+    params = {'page': page}
 
     headers = common.build_headers(config['ebook_url'], config['user_agent'])
 
