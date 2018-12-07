@@ -42,10 +42,14 @@ def fetch_page(s, config, page):
     return s.get(config['ebook_url'], headers=headers, params=params)
 
 
+def get_container(html):
+    soup = BeautifulSoup(html, 'html.parser')
+    return soup.find('div', {'id': 'product-account-list'})
+
+
 def get_ebooks_by_page(s, config, page) -> List[Tuple]:
     response = fetch_page(s, config, page)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    product_account_list = soup.find('div', {'id': 'product-account-list'})
+    product_account_list = get_container(response.text)
     raw_titles = product_account_list.find_all('div', {'class': 'title'})
     titles = map(common.parse_title, [title.text for title in raw_titles])
     raw_authors = product_account_list.find_all('div', {'class': 'author'})
@@ -56,8 +60,7 @@ def get_ebooks_by_page(s, config, page) -> List[Tuple]:
 
 def get_page_count(s, config) -> int:
     response = fetch_page(s, config, 1)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    product_account_list = soup.find('div', {'id': 'product-account-list'})
+    product_account_list = get_container(response.text)
     page_count = len(product_account_list.find_all(
         'a', {'class': 'solr-page-page-selector-page'})) + 1
 
@@ -85,7 +88,7 @@ def sync_books():
         s = requests.Session()
         print('getting log in form')
         form_build_id = get_form_id(s, config)
-        print('loggin in')
+        print(f'Username: {config["username"]}')
         login(s, form_build_id, config)
         print('getting page count')
         page_count = get_page_count(s, config)
