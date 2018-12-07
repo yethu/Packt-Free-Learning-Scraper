@@ -3,6 +3,7 @@ from colorama import Fore, Back, Style
 from models.book import Book
 from orator.exceptions.query import QueryException
 from tabulate import tabulate
+from typing import Callable, List, Tuple
 import argparse
 import common
 import functools
@@ -19,7 +20,7 @@ def get_form_id(s, config: dict) -> str:
     return form_build_id_tag['value']
 
 
-def memoize(fetcher):
+def memoize(fetcher) -> Callable:
     cache = dict()
 
     @functools.wraps(fetcher)
@@ -41,7 +42,7 @@ def fetch_page(s, config, page):
     return s.get(config['ebook_url'], headers=headers, params=params)
 
 
-def get_ebooks_by_page(s, config, page):
+def get_ebooks_by_page(s, config, page) -> List[Tuple]:
     response = fetch_page(s, config, page)
     soup = BeautifulSoup(response.text, 'html.parser')
     product_account_list = soup.find('div', {'id': 'product-account-list'})
