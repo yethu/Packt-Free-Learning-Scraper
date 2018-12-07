@@ -133,10 +133,13 @@ def get_current_book() -> str:
 def check_current_book(no_local = False):
     current_book = get_current_book()
     print(f'Current Book: {current_book}')
-    if not no_local:
-        message = f'{Back.GREEN}CLAIMED{Style.RESET_ALL}' if book_exists_in_db(
-            current_book) else f'{Back.RED}NOT CLAIMED{Style.RESET_ALL}'
-        print(f'Status: {message}')
+
+    if no_local:
+        return
+
+    message = f'{Back.GREEN}CLAIMED{Style.RESET_ALL}' if book_exists_in_db(
+        current_book) else f'{Back.RED}NOT CLAIMED{Style.RESET_ALL}'
+    print(f'Status: {message}')
 
 
 def book_exists_in_db(title: str) -> bool:
