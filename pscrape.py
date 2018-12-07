@@ -5,6 +5,7 @@ from orator.exceptions.query import QueryException
 from tabulate import tabulate
 import argparse
 import common
+import getpass
 import json
 import requests
 
@@ -80,9 +81,11 @@ def sync_books():
 
 
 def login(s, form_build_id: str, config: dict):
+    password = getpass.getpass()
+
     login_data = {
         'name': config['username'],
-        'pass': config['password'],
+        'pass': password,
         'op': 'Log in',
         'form_id': 'packt_v3_account_login_form',
         'form_build_id': form_build_id

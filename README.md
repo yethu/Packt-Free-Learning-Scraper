@@ -1,15 +1,15 @@
 ## Note
+
 This package does not automate downloading books from server. This is a work in progress. **USE AT OWN RISK**
 
-## Warning
-Since this is WIP, current iteration of the software stores the username and password in *plaintext* in a configuration file. This is undesirable behavior and will be fixed in next version.
-
 ## Building and configuration
+
 run `pip install -r requirements.txt`  
 copy `config.example.json` to `config.json` and fill out blank fields  
 run `orator migrate -c dbconfig.py`
 
 ## Usage
+
 ```
 usage: pscrape.py [-h] [-s] [-c] [--no-local] [-l] [-d] [-st TERM]
 
@@ -26,7 +26,8 @@ check current free book:
 ```
 
 ## TODO
-- [ ] Remove password from `config.json`
+
+- [x] Remove password from `config.json`
 - [ ] Add fuzzy search
 - [x] Check current free book without comparing to local database
 - [x] Clear local database
