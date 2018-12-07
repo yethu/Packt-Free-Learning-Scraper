@@ -5,6 +5,7 @@ from orator.exceptions.query import QueryException
 from tabulate import tabulate
 import argparse
 import common
+import functools
 import getpass
 import json
 import requests
@@ -18,12 +19,30 @@ def get_form_id(s, config: dict) -> str:
     return form_build_id_tag['value']
 
 
-def get_ebooks_by_page(s, config, page):
-    params = {
-        'page': page
-    }
+def memoize(fetcher):
+    cache = dict()
+
+    @functools.wraps(fetcher)
+    def memoized_fn(*args, **kwargs):
+        key = args[2]
+        if key not in cache:
+            cache[key] = fetcher(*args, **kwargs)
+        return cache[key]
+
+    return memoized_fn
+
+
+@memoize
+def fetch_page(s, config, page):
+    params = {page: page}
+
     headers = common.build_headers(config['ebook_url'], config['user_agent'])
-    response = s.get(config['ebook_url'], headers=headers, params=params)
+
+    return s.get(config['ebook_url'], headers=headers, params=params)
+
+
+def get_ebooks_by_page(s, config, page):
+    response = fetch_page(s, config, page)
     soup = BeautifulSoup(response.text, 'html.parser')
     product_account_list = soup.find('div', {'id': 'product-account-list'})
     raw_titles = product_account_list.find_all('div', {'class': 'title'})
@@ -35,11 +54,7 @@ def get_ebooks_by_page(s, config, page):
 
 
 def get_page_count(s, config) -> int:
-    params = {
-        'page': 1
-    }
-    headers = common.build_headers(config['ebook_url'], config['user_agent'])
-    response = s.get(config['ebook_url'], headers=headers, params=params)
+    response = fetch_page(s, config, 1)
     soup = BeautifulSoup(response.text, 'html.parser')
     product_account_list = soup.find('div', {'id': 'product-account-list'})
     page_count = len(product_account_list.find_all(
