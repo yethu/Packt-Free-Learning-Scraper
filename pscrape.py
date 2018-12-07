@@ -130,7 +130,7 @@ def get_current_book() -> str:
         return title.text.strip()
 
 
-def check_current_book(no_local = False):
+def check_current_book(no_local: bool = False):
     current_book = get_current_book()
     print(f'Current Book: {current_book}')
 
