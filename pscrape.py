@@ -89,7 +89,11 @@ def sync_books():
         print('getting log in form')
         form_build_id = get_form_id(s, config)
         print(f'Username: {config["username"]}')
-        login(s, form_build_id, config)
+        try:
+            login(s, form_build_id, config)
+        except Exception:
+            print('Log in failed.')
+            return
         print('getting page count')
         page_count = get_page_count(s, config)
         print('syncing books')
@@ -110,8 +114,9 @@ def login(s, form_build_id: str, config: dict):
         'form_build_id': form_build_id
     }
     headers = common.build_headers(config['login_url'], config['user_agent'])
-    # TODO: check login failure
     s.post(config['login_url'], data=login_data, headers=headers)
+    if 'access_token_live' not in s.cookies.keys():
+        raise Exception('Log in unsuccessful')
 
 
 def list_books():
