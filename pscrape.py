@@ -156,7 +156,11 @@ def get_current_book() -> str:
 
 def check_current_book(no_local: bool = False):
     current_book = get_current_book()
-    print(f'Current Book: {current_book}')
+    if len(current_book) == 0:
+        print('Book name is empty. There might be an error on packt\'s side.')
+        return
+    else:
+        print(f'Current Book: {current_book}')
 
     if no_local:
         return
